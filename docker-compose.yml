@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  app:
+    build: .
+    ports:
+      - "3333:3333"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app
+    links:
+      - postgres
+      - redis
+    command: npm run setup && npm run start
   postgres:
     image: bitnami/postgresql:latest
     ports:

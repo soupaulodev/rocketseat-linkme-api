@@ -88,6 +88,6 @@ app.get("/api/metrics", async (request, reply) => {
   return reply.status(200).send({ result: metrics });
 });
 
-app.listen({ port: 3000 }).then(() => {
+app.listen({ port: 3333 }).then(() => {
   console.log("Server listening on port 3000");
 });
