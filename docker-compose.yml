@@ -9,13 +9,14 @@ services:
       - postgres
       - redis
     networks:
-      appnet:
+      - appnet
     volumes:
       - .:/app
     links:
       - postgres
       - redis
     command: npm run setup && npm run start
+    restart: always
   postgres:
     image: bitnami/postgresql:latest
     ports:
@@ -25,7 +26,8 @@ services:
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=linktrue
     networks:
-      appnet:
+      - appnet
+    restart: on-failure
     volumes:
       - linktrue_pg_data:/bitnami/postgresql/
 
@@ -36,9 +38,10 @@ services:
     environment:
       - REDIS_PASSWORD=docker
     networks:
-      appnet:
+      - appnet
     volumes:
       - linktrue_redis_data:/bitnami/redisql/
+    restart: on-failure
 
 volumes:
   .:/app:
