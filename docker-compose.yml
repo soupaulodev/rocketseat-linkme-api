@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "3333:3333"
+      - "3000:3000"
     depends_on:
       - postgres
       - redis
@@ -35,5 +35,6 @@ services:
       - linktrue_redis_data:/bitnami/redisql/
 
 volumes:
+  .:/app:
   linktrue_pg_data:
   linktrue_redis_data:
