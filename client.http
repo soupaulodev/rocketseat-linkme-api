@@ -1,0 +1,19 @@
+GET http://localhost:3000/paulodev
+
+###
+
+GET http://localhost:3000/api/links
+
+###
+
+post http://localhost:3000/api/links
+Content-Type: application/json
+
+{
+  "code": "paulodev",
+  "url": "https://soupaulodev.com.br"
+}
+
+###
+
+GET http://localhost:3000/api/metrics
