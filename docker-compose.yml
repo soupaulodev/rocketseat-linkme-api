@@ -8,6 +8,8 @@ services:
     depends_on:
       - postgres
       - redis
+    networks:
+      appnet:
     volumes:
       - .:/app
     links:
@@ -22,6 +24,8 @@ services:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=linktrue
+    networks:
+      appnet:
     volumes:
       - linktrue_pg_data:/bitnami/postgresql/
 
@@ -31,6 +35,8 @@ services:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD=docker
+    networks:
+      appnet:
     volumes:
       - linktrue_redis_data:/bitnami/redisql/
 
@@ -38,3 +44,6 @@ volumes:
   .:/app:
   linktrue_pg_data:
   linktrue_redis_data:
+
+networks:
+  appnet:
