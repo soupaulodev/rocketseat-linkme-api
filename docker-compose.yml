@@ -2,9 +2,10 @@ version: "3.8"
 
 services:
   app:
+    image: linktrue
     build: .
     ports:
-      - "3000:3000"
+      - "13000:3000"
     depends_on:
       - postgres
       - redis
@@ -22,7 +23,7 @@ services:
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=linktrue
+      - POSTGRES_DB=linktrue_db
     networks:
       - appnet
     restart: on-failure
