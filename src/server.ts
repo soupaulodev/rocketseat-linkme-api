@@ -3,7 +3,10 @@ import z from "zod";
 import { sql } from "./lib/postgres";
 import postgres from "postgres";
 import { redis } from "./lib/redis";
+import dotenv from 'dotenv';
 
+dotenv.config()
+const PORT = Number(process.env.PORT || 5000)
 const app = fastify();
 
 app.get("/:code", async (request, reply) => {
@@ -88,6 +91,6 @@ app.get("/api/metrics", async (request, reply) => {
   return reply.status(200).send({ result: metrics });
 });
 
-app.listen({ port: 3000 }).then(() => {
-  console.log("Server listening on port 3000");
+app.listen({ port: PORT }).then(() => {
+  console.log(`Server listening on port ${PORT}`);
 });

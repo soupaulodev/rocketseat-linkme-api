@@ -6,13 +6,15 @@
   "scripts": {
     "start": "tsx ./src/server.ts",
     "dev": "tsx watch ./src/server.ts",
-    "setup": "tsx ./src/setup.ts"
+    "setup": "tsx ./src/setup.ts",
+    "teste": "tsx ./src/lib/redis.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.30",
+    "dotenv": "^16.4.5",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2"
   },

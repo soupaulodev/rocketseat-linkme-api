@@ -1,5 +1,8 @@
 import postgres from "postgres";
+import dotenv from "dotenv";
 
-export const sql = postgres(
-  "postgresql://docker:docker@localhost:5432/linktrue_db"
-);
+dotenv.config();
+
+export const sql = postgres(`
+  ${process.env.POSTGRES}
+`);
