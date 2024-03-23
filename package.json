@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "build": "npm install && npm run setup",
     "start": "tsx ./src/server.ts",
     "dev": "tsx watch ./src/server.ts",
     "setup": "tsx ./src/setup.ts",
