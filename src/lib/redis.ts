@@ -1,14 +1,3 @@
-import dotenv from "dotenv";
-import { createClient } from "redis";
+import { Redis } from "ioredis";
 
-dotenv.config();
-
-export const redis = createClient({
-  password: process.env.REDIS_PASSWORD,
-  socket: {
-      host: process.env.REDIS_HOSTNAME,
-      port: Number(process.env.REDIS_PORT)
-  }
-});
-
-redis.connect();
+export const redis = new Redis();

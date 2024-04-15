@@ -3,11 +3,20 @@ import z from "zod";
 import { sql } from "./lib/postgres";
 import postgres from "postgres";
 import { redis } from "./lib/redis";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import fastifyCors from "@fastify/cors";
 
-dotenv.config()
-const PORT = Number(process.env.PORT || 5000)
+dotenv.config();
+const PORT = Number(process.env.PORT || 3000);
+const HOST = String(
+  process.env.NODE_ENV === "development" ? "127.0.0.1" : "0.0.0.0"
+);
+
 const app = fastify();
+
+app.register(fastifyCors, {
+  origin: "*",
+});
 
 app.get("/:code", async (request, reply) => {
   const getLinkSchema = z.object({
@@ -27,7 +36,7 @@ app.get("/:code", async (request, reply) => {
 
   const link = result[0];
 
-  await redis.zIncrBy("metrics", 1, String(link.id));
+  await redis.zincrby("metrics", 1, String(link.id));
 
   return reply.redirect(301, link.original_url);
 });
@@ -76,21 +85,26 @@ app.post("/api/links", async (request, reply) => {
 });
 
 app.get("/api/metrics", async (request, reply) => {
-  const result = await redis.zRangeByScoreWithScores("metrics", 0, 50);
+  const result = await redis.zrangebyscore("metrics", 0, 50, "WITHSCORES");
+  const metrics = [];
 
-  const metrics = result
-    .sort((a, b) => {
-      return b.score - a.score;
-    })
-    .map((item) => {
-      return {
-        shorteLinkId: Number(item.value),
-        clicks: Number(item.score),
-      };
+  for (let i = 0; i < result.length; i += 2) {
+    metrics.push({
+      shorteLinkId: Number(result[i]),
+      clicks: Number(result[i + 1]),
     });
+  }
+
+  metrics.sort((a, b) => b.clicks - a.clicks);
+
   return reply.status(200).send({ result: metrics });
 });
 
-app.listen({ port: PORT }).then(() => {
-  console.log(`Server listening on port ${PORT}`);
-});
+app
+  .listen({ port: PORT, host: HOST })
+  .then((address) => {
+    console.log(`Server listening at ${address}`);
+  })
+  .catch((err) => {
+    console.log("Error: ", err);
+  });
