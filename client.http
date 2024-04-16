@@ -38,7 +38,7 @@ Content-Type: application/json
 
 
 ### User Logout
-delete http://localhost:3000/api/auth/logout/9f422aef-b683-4a75-8da5-a3a658277908
+delete http://localhost:3000/api/auth/logout/
 
 ### User Update
 patch http://localhost:3000/api/users/9f422aef-b683-4a75-8da5-a3a658277908

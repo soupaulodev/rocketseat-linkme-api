@@ -15,6 +15,11 @@ export async function login(app: FastifyInstance) {
 
     const { email, password } = loginSchema.parse(request.body);
 
+    const acessToken = request.cookies.access_token;
+    if (acessToken) {
+      throw new BadRequest("Already logged in");
+    }
+
     const result = await sql/*sql*/ `
       SELECT id, name, password
       FROM users
@@ -30,11 +35,26 @@ export async function login(app: FastifyInstance) {
       throw new Unauthorized("Invalid password");
     }
 
-    return reply.status(200).send({
-      user: {
-        id: result[0].id,
-        name: result[0].name,
-      },
+    const payload = {
+      id: result[0].id,
+      name: result[0].name,
+      email: result[0].email,
+    };
+
+    const token = request.jwt.sign(payload);
+
+    reply.status(200).setCookie("access_token", token, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
     });
+    return;
+
+    // return reply.status(200).send({
+    //   user: {
+    //     id: result[0].id,
+    //     name: result[0].name,
+    //   },
+    // });
   });
 }

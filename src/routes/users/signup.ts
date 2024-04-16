@@ -17,6 +17,11 @@ export async function signup(app: FastifyInstance) {
 
     const { name, email, password } = createUserSchema.parse(request.body);
 
+    const acessToken = request.cookies.access_token;
+    if (acessToken) {
+      throw new BadRequest("Already logged in");
+    }
+
     const result = await sql/*sql*/ `
       SELECT name FROM users WHERE email = ${email}
     `;
@@ -28,11 +33,27 @@ export async function signup(app: FastifyInstance) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await sql/*sql*/ `
+    const user = await sql/*sql*/ `
       INSERT INTO users (id, name, email, password)
       VALUES (${id}, ${name}, ${email}, ${hashedPassword})
+      RETURNING *
     `;
 
-    return reply.status(201).send({ user: { id, name } });
+    const payload = {
+      id: user[0].id,
+      name: user[0].name,
+      email: user[0].email,
+    };
+
+    const token = request.jwt.sign(payload);
+
+    reply.status(200).setCookie("access_token", token, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    return;
+
+    // return reply.status(201).send({ user: { id, name } });
   });
 }
