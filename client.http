@@ -24,7 +24,8 @@ Content-Type: application/json
 {
   "name": "Paulo Marques",
   "email": "pm@pm.com",
-  "password": "123456"
+  "password": "123456",
+  "confirmPassword": "123456"
 }
 
 ### User Login

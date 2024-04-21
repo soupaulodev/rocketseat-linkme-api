@@ -1,6 +1,6 @@
 import { sql } from "./lib/postgres";
 
-async function setup() {
+export async function setup() {
   await sql/*sql*/ `
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY UNIQUE,

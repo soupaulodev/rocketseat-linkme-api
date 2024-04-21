@@ -1,8 +1,5 @@
 import postgres from "postgres";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export const sql = postgres(`
-  ${process.env.POSTGRES}
+  postgresql://docker:docker@postgres:5432/linkme_db
 `);

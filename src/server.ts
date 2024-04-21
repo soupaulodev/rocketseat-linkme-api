@@ -1,5 +1,4 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
-import dotenv from "dotenv";
 import fastifyCors from "@fastify/cors";
 import { signup } from "./routes/users/signup";
 import { login } from "./routes/users/login";
@@ -14,8 +13,9 @@ import { del } from "./routes/users/del";
 import fjwt, { FastifyJWT } from "@fastify/jwt";
 import fCookie from "@fastify/cookie";
 import { Unauthorized } from "./routes/_errors/unauthorized";
+import { helloWorld } from "./routes/hello-world";
+import { setup } from "./setup";
 
-dotenv.config();
 const PORT = Number(process.env.PORT || 3000);
 const HOST = String(
   process.env.NODE_ENV === "development" ? "127.0.0.1" : "0.0.0.0"
@@ -63,6 +63,7 @@ app.decorate(
   }
 );
 
+app.register(helloWorld);
 app.register(signup, { prefix: "/api/auth" });
 app.register(login, { prefix: "/api/auth" });
 app.register(logout, { prefix: "/api/auth" });
@@ -86,6 +87,11 @@ app.setErrorHandler(errorHandler);
 app
   .listen({ port: PORT, host: HOST })
   .then((address) => {
+    try {
+      setup();
+    } catch (error) {
+      console.log("Error setup db: ", error);
+    }
     console.log(`Server listening at ${address}`);
   })
   .catch((err) => {

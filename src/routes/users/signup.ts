@@ -13,9 +13,16 @@ export async function signup(app: FastifyInstance) {
       name: z.string(),
       email: z.string().email(),
       password: z.string().min(6),
+      confirmPassword: z.string().min(6),
     });
 
-    const { name, email, password } = createUserSchema.parse(request.body);
+    const { name, email, password, confirmPassword } = createUserSchema.parse(
+      request.body
+    );
+
+    if (password !== confirmPassword) {
+      throw new BadRequest("Passwords do not match");
+    }
 
     const acessToken = request.cookies.access_token;
     if (acessToken) {

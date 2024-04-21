@@ -1,25 +1,39 @@
-version: "3.7"
-
 services:
   postgres:
     image: bitnami/postgresql:latest
+    restart: always
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=linkme
+      - POSTGRES_DB=linkme_db
     volumes:
       - linkme_pg_data:/bitnami/postgresql
 
   redis:
     image: bitnami/redis:latest
+    restart: always
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "6379:6379"
     volumes:
       - "linkme_redis_data:/bitnami/redis/data"
+
+  app:
+    container_name: app-linkme
+    build: .
+    restart: always
+
+    env_file: ./.env
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   linkme_pg_data:
